@@ -43,11 +43,6 @@ func (it *FriendIterator) Next(ctx context.Context) (int64, error) {
 	/*if it.index == 3 {
 		return it.index, errorUnknown
 	}*/
-	//模拟慢查询
-	/*if it.index == 4 {
-		query = time.After(10*time.Second)
-		fmt.Printf("slow query.\n")
-	}*/
 
 	// 10ms返回数据
 	select {
@@ -85,23 +80,18 @@ func GetUserProfile(ctx context.Context, id int64) (*User, error) {
 func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 1500*time.Millisecond)
-	go func() {
-		time.Sleep(2000 * time.Millisecond) //模拟总请求时间为2s
-		fmt.Printf("cancel \n")
-		cancel()
-	}()
 	start := time.Now()
-	rsp, err := demo1(ctx, 0)
+	//rsp, err := demo1(ctx, 0)
 	//rsp, err := demo2(ctx,0)
-	//rsp, err := demo3(ctx,0)
-	//rsp, err := demo4(ctx,0)
+	//rsp, err := demo3(ctx, 0)
+	rsp, err := demo4(ctx, 0)
 	if err != nil {
 		fmt.Printf("error: %s", err)
 	} else {
 		fmt.Printf("finished in %s\n ret: %s", time.Since(start), jsonString(rsp))
 	}
 	fmt.Println()
-
+	cancel()
 }
 
 func jsonString(v interface{}) string {
@@ -240,6 +230,9 @@ func demo3(ctx context.Context, user int64) (map[string]*User, error) {
 	ret := map[string]*User{}
 	g.Go(func() error {
 		for friend := range friends {
+			if friend.Id == 3 {
+				//return errorUnknown
+			}
 			ret[friend.Name] = friend
 		}
 		return nil
@@ -304,6 +297,9 @@ func demo4(ctx context.Context, user int64) (map[string]*User, error) {
 	ret := map[string]*User{}
 	g.Go(func() error {
 		for friend := range friends {
+			if friend.Id == 3 {
+				return errorUnknown
+			}
 			ret[friend.Name] = friend
 		}
 		return nil
