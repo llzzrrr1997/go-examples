@@ -45,6 +45,7 @@ FROM alpine
 WORKDIR /service
 
 COPY --from=builder /service/app /service/app
+COPY main.go /service
 
 EXPOSE 8080
 

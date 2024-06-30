@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"os"
 )
 
 func main() {
@@ -9,7 +10,20 @@ func main() {
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
+			"host":    os.Getenv("host"),
 		})
 	})
+	r.GET("/heartbeat", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "ok",
+		})
+	})
+
+	r.GET("/version", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"version": "2.0.0",
+		})
+	})
+
 	r.Run(":8080") // 监听并在 0.0.0.0:8080 上启动服务
 }
