@@ -8,9 +8,10 @@ import (
 func main() {
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
+		hostName, _ := os.Hostname()
 		c.JSON(200, gin.H{
 			"message": "pong",
-			"host":    os.Getenv("host"),
+			"host":    hostName,
 		})
 	})
 	r.GET("/heartbeat", func(c *gin.Context) {
